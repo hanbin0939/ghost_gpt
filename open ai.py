@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands , tasks
 from discord.commands import Option
-from config import token,key
+from config.config import token,key
 import aiohttp
 from easy_pil import Editor, load_image_async, Font
 import openai
