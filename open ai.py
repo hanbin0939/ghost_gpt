@@ -3,12 +3,10 @@ from discord.ext import commands , tasks
 from discord.commands import Option
 from config.config import token,key
 import aiohttp
-from easy_pil import Editor, load_image_async, Font
 import openai
 from itertools import cycle
 import asyncio
 
-token = 'MTA2OTYyMzU3MTY0ODg3NjY2NA.Gcc473.lTpSqU2J3-8GkYyvZ__EsDJSCawQzfBr3K7Abg'
 
 status = cycle(["use '$gpt' to talk ghost gpt!", "made bt hanbin#0939", "SCP : Secreat Laboratory"])
 
