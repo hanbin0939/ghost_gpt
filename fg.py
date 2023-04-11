@@ -1,14 +1,13 @@
 import discord
 from discord.ext import commands , tasks
 from discord.commands import Option
-from config.config import token,key
+from config import token,key
 import aiohttp
 import openai
 from itertools import cycle
 import asyncio
-from dotenv import load_dotenv
-load_dotenv()
 
+model_id = "gpt-4-32k"
 status = cycle(["use '$gpt' to talk ghost gpt!", "made bt hanbin#0939", "SCP : Secreat Laboratory"])
 
 bot = commands.Bot(command_prefix='$',intents=discord.Intents.all())
@@ -25,7 +24,7 @@ async def on_ready():
 async def change_status():
     await bot.change_presence(activity=discord.Game(next(status)))
 
-'''
+
 @bot.command(guild_ids=[1069174895893827604])
 async def gpt(ctx:commands.Context, *,prompt:str):
     async with ctx.typing():
@@ -43,23 +42,7 @@ async def gpt(ctx:commands.Context, *,prompt:str):
             output = response["choices"][0]["text"]
             embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
             await ctx.reply(embed=embed)
-'''
-async def gpt_response(prompt):
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt},
-            
-        ]
-    )
-    return completion.choices[0].message.content
 
-@bot.command(name="gpt", help="Ask GPT-3.5 Turbo a question or send a message")
-async def gpt(ctx, *, prompt: str):
-    async with ctx.typing():
-        await asyncio.sleep(2)
-    response = await gpt_response(prompt)
-    await ctx.send(response)
 
 
 @bot.event
