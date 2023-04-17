@@ -25,7 +25,7 @@ async def on_ready():
 async def change_status():
     await bot.change_presence(activity=discord.Game(next(status)))
 
-'''
+
 @bot.command(guild_ids=[1069174895893827604])
 async def gpt(ctx:commands.Context, *,prompt:str):
     async with ctx.typing():
@@ -42,25 +42,24 @@ async def gpt(ctx:commands.Context, *,prompt:str):
         async with session.post("https://api.openai.com/v1/completions", json=response , headers=headers) as resp:
             output = response["choices"][0]["text"]
             embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
+            print(output)
             await ctx.reply(embed=embed)
-'''
+
 async def gpt_response(prompt):
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": prompt},
-            
+            {"role": "user", "content": prompt}
         ]
     )
     return completion.choices[0].message.content
 
-@bot.command(name="gpt", help="Ask GPT-3.5 Turbo a question or send a message")
+@bot.command(name="gpt_3.5", help="Ask GPT-3.5 Turbo a question or send a message")
 async def gpt(ctx, *, prompt: str):
     async with ctx.typing():
         await asyncio.sleep(2)
     response = await gpt_response(prompt)
     await ctx.send(response)
-
 
 @bot.event
 async def on_member_join(member):
