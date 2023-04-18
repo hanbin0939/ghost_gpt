@@ -9,9 +9,9 @@ import asyncio
 from dotenv import load_dotenv
 load_dotenv()
 
-status = cycle(["use '$gpt' to talk ghost gpt!", "made bt hanbin#0939", "SCP : Secreat Laboratory"])
-
+status = cycle(["use '$gpt' to talk ghost gpt!", "made bt hanbin#0939", "SCP : Secreat Laboratory","gpt_3.5","$help"])
 bot = commands.Bot(command_prefix='$',intents=discord.Intents.all())
+bot.remove_command("help")
 openai.api_key = key
 @bot.event
 async def on_ready():
@@ -25,8 +25,19 @@ async def on_ready():
 async def change_status():
     await bot.change_presence(activity=discord.Game(next(status)))
 
+@bot.command(name="help",help="show this commands")
+async def help(ctx):
+    embed = discord.Embed(title="help")
+    file = discord.File("Ghosts_insignia_CoDG.png",filename="image.png")
+    embed.set_author(name="command list",icon_url="attachment://image.png")
+    embed.set_thumbnail(url="attachment://image.png")
+    embed.add_field(name="$help",value="Shows this message",inline=False)
+    embed.add_field(name="$gpt",value="ask a Chat-Gpt (model = text-davinci-003)",inline=False)
+    embed.add_field(name="$gpt_3.5",value=" Ask __GPT-3.5-Turbo__ a question or send a message",inline=False)
+    embed.add_field(name="/dev_role",value="you can get develoer community acess room.",inline=False)
+    await ctx.reply(embed=embed,file=file)
 
-@bot.command(guild_ids=[1069174895893827604])
+@bot.command(guild_ids=[1069174895893827604],help="ask a chat-gpt")
 async def gpt(ctx:commands.Context, *,prompt:str):
     async with ctx.typing():
         await asyncio.sleep(2)
@@ -109,55 +120,6 @@ async def dev_role(ctx,
         await user.add_roles(role)
         await ctx.respond("you got a **exiled** role.")
 
-@bot.slash_command()
-async def task_force_141(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083243753306865745)
-    user = ctx.author
-    await user.add_roles(role)
-    await ctx.respond("sucrffuly get 141")
-
-@bot.slash_command()
-async def remove_task_force_141(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083243753306865745)
-    user = ctx.author
-    await user.remove_roles(role)
-    await ctx.respond("sucrffuly remove 141")
-
-@bot.slash_command()
-async def delta_force(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083243819857891442)
-    user = ctx.author
-    await user.add_roles(role)
-    await ctx.respond("sucrffuly get delta")
-
-@bot.slash_command()
-async def remove_delta_force(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083243819857891442)
-    user = ctx.author
-    await user.remove_roles(role)
-    await ctx.respond("sucrffuly remove delta")
-
-@bot.slash_command()
-async def shadow_company(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083545011964104764)
-    user = ctx.author
-    await user.add_roles(role)
-    await ctx.respond("You got a ||**SHADOW**||")
-
-@bot.slash_command()
-async def remove_shadow_company(ctx):
-    guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1083545011964104764)
-    user = ctx.author
-    await user.remove_roles(role)
-    await ctx.respond("delete a ||**SHADOW**||")
-
-
 @bot.command(name="welcome_embed")
 @commands.is_owner()
 async def test(ctx):
@@ -167,11 +129,6 @@ async def test(ctx):
     embed.set_footer(text="서버에 와주셔서 진심으로 감사드립니다",icon_url="https://th.bing.com/th/id/OIP.TPIH5vkBHW57cd7zyStnuAHaHa?pid=ImgDet&rs=1")
     await ctx.send(embed=embed)
 
-@bot.command()
-async def type(ctx):
-    async with ctx.typing():
-        await asyncio.sleep(2)
-    await ctx.send("Typing...")
 
 
 @test.error
