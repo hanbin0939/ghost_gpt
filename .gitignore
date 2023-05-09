@@ -151,3 +151,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 config/
+open_ai.py
+setting.py
+utils.py
+cogs/role.py
+cogs/roleview.py
