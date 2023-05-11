@@ -1,7 +1,11 @@
 import discord
 from dotenv import load_dotenv
+from discord.commands import Option
 from discord.ext import commands
 from config.config import *
+import asyncio
+import aiohttp
+import openai
 
 load_dotenv()
 
@@ -12,7 +16,7 @@ bot = commands.Bot(command_prefix='$',intents=discord.Intents.all(),owner_ids=[7
 cogs_path = 'cogs'
 cogs_list = [
     'gpt',
-    'user',
+    'user'
 ]
 
 for cog in cogs_list:
@@ -34,6 +38,34 @@ async def hello(ctx):  # !hello라고 사용자가 입력하면
 @bot.command(usage='ping', description='test description', help='test help')
 async def test(ctx):
     await ctx.send("pong")
+
+@bot.slash_command(guild_ids = [1069174895893827604])
+async def dev_role(ctx):
+    guild = bot.get_guild(1069174895893827604)
+    role = guild.get_role(1104911269766631584)
+    user = ctx.author
+    await user.add_roles(role)
+    await ctx.respond("you got a **python** role.")
+    
+
+@bot.command(guild_ids=[1069174895893827604],help="ask a chat-gpt")
+async def gpt(ctx:commands.Context, *,prompt:str):
+    async with ctx.typing():
+        await asyncio.sleep(2)
+    async with aiohttp.ClientSession() as session:
+        response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=prompt,
+                max_tokens=3000,
+                temperature=0.7,
+                )
+
+        headers = {"Authorization" : f"banner{key}"}
+        async with session.post("https://api.openai.com/v1/completions", json=response , headers=headers) as resp:
+            output = response["choices"][0]["text"]
+            embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
+            print(output)
+            await ctx.reply(embed=embed)
 
 
 bot.run(token_beta)
