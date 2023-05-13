@@ -29,10 +29,34 @@ class Chat_gpt(commands.Cog):
         await ctx.send(response)
 
     @discord.slash_command(name="chat_gpt_turbo")
-    async def gpt(self,ctx,*,prompt: str):
+    async def gpt_s(self,ctx,*,prompt: str):
         response = await gpt_response(prompt)
         await ctx.respond(response)
-    
+
+    @commands.command()
+    @commands.is_owner()
+    async def generate(self,  ctx,  *, prompt):
+        response = openai.Image.create(
+            prompt=prompt,
+            n=2,
+            size="1024x1024"
+        )
+        image_url = response['data'][0]['url']
+        await ctx.reply(image_url)
+
+    @generate.error
+    async def error(ctx,error):
+        await ctx.reply(error)
 
 def setup(bot): # this is called by Pycord to setup the cog
     bot.add_cog(Chat_gpt(bot)) # add the cog to the bot
+
+
+'''
+        image = response['image']
+
+        with open('image.png', 'wb') as f:
+            f.write(image)
+
+        await ctx.send(file=discord.File('image.png'))
+'''
