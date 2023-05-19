@@ -17,7 +17,8 @@ cogs_path = 'cogs'
 cogs_list = [
     'gpt',
     'user',
-    "msg"
+    "msg",
+    "dall_e"
 ]
 
 for cog in cogs_list:
@@ -32,32 +33,12 @@ async def on_ready():  # 봇 준비 시 1회 동작하는 부분
 
 #rework soon...
 @bot.slash_command(guild_ids = [1069174895893827604])
-async def dev_role(ctx):
+async def beta_testing(ctx):
     guild = bot.get_guild(1069174895893827604)
-    role = guild.get_role(1104911269766631584)
+    role = guild.get_role(1088477030661763183)
     user = ctx.author
     await user.add_roles(role)
-    await ctx.respond("you got a **DEV** role.")
-    
-#rework soon....
-@bot.command(name="text-davinci-003",guild_ids=[1069174895893827604],help="ask a chat-gpt")
-async def ask_gpt(ctx:commands.Context, *,prompt:str):
-    async with ctx.typing():
-        await asyncio.sleep(2)
-    async with aiohttp.ClientSession() as session:
-        response = openai.Completion.create(
-                model="text-davinci-003",
-                prompt=prompt,
-                max_tokens=3000,
-                temperature=0.7,
-                )
-
-        headers = {"Authorization" : f"banner{key}"}
-        async with session.post("https://api.openai.com/v1/completions", json=response , headers=headers) as resp:
-            output = response["choices"][0]["text"]
-            embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
-            print(output)
-            await ctx.reply(embed=embed)
+    await ctx.respond("베타 태스팅에 조인하셧습니다!")
 
 @bot.command(name="help",help="show this commands")
 async def help(ctx):
@@ -71,6 +52,7 @@ async def help(ctx):
     embed.add_field(name="$generate",value="Ghosty 가 당신이 원하는 이미지를 그려줍니다!\n(model = Dall-E)",inline=False)
     embed.add_field(name="/dev_role",value="you can get develoer community acess room.",inline=False)
     embed.add_field(name="/chat_gpt_turbo",value="Slash command gpt3.5",inline=False)
+    embed.add_field(name="/generate_command",value="BETA",inline=False)
     await ctx.reply(embed=embed,file=file)
 
-bot.run(token)
+bot.run(token_beta)
