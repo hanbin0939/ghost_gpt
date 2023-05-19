@@ -11,6 +11,7 @@ class message(commands.Cog):
     async def on_message(self,message):
         if "hello" in message.content:
             await message.channel.send(f"{message.author.mention}nice to meet you let's talk")
+'''
         if not message.guild: return # DM Message
         if message.author.guild_permissions.manage_guild:
 
@@ -25,7 +26,7 @@ class message(commands.Cog):
 
             else:
                 await message.channel.send("올바른 값을 입력해주세요.")
-
+'''
     
 def setup(bot): # this is called by Pycord to setup the cog
     bot.add_cog(message(bot))

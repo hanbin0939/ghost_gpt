@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import openai
 import aiohttp
-from config.config import key
+from config.config import *
 import asyncio
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,52 +11,71 @@ async def gpt_response(prompt):
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": prompt }
         ]
     )
     return completion.choices[0].message.content
 
+modlist = [759072684461391893]
+
+def ListCheck():
+    async def IsInList(ctx):
+        member = ctx.message.author.id
+        return member in modlist
+    return commands.check(IsInList)
 
 class Chat_gpt(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def gpt(self,ctx,*,prompt: str):
+    #@ListCheck()
+    async def gpt_turbo(self,ctx,*,prompt: str):
         async with ctx.typing():
             await asyncio.sleep(2)
         response = await gpt_response(prompt)
         await ctx.send(response)
 
-    @discord.slash_command(name="chat_gpt_turbo")
-    async def gpt_s(self,ctx,*,prompt: str):
-        response = await gpt_response(prompt)
-        await ctx.respond(response)
+    @commands.command(help="ask a chat-gpt")
+    async def gpt(self, ctx:commands.Context, *,prompt:str):
+        async with ctx.typing():
+            await asyncio.sleep(2)
+        async with aiohttp.ClientSession() as session:
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=prompt,
+                max_tokens=4000,
+                temperature=0.7,
+                )
+            headers = {"Authorization" : f"banner{key}"}
+            async with session.post("https://api.openai.com/v1/completions", json=response , headers=headers) as resp:
+                output = response["choices"][0]["text"]
+                embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
+                print(output)
+                await ctx.reply(embed=embed)
 
-    @commands.command()
-    @commands.is_owner()
-    async def generate(self,  ctx,  *, prompt):
-        response = openai.Image.create(
-            prompt=prompt,
-            n=2,
-            size="1024x1024"
-        )
-        image_url = response['data'][0]['url']
-        await ctx.reply(image_url)
+    @commands.Cog.listener("on_message")
+    async def on_message(self,message):
+        if message.author.bot:
+            return
+            
+        username = str(message.author).split('#')[0]
+        user_message = str(message.content)
+        channel = str(message.channel.name)
+        prompt = user_message
+        
+        print(username + " said " + user_message.lower() + " in " + channel)
 
-    @generate.error
-    async def error(ctx,error):
+        if message.channel.name == 'beta-testing':
+            async with message.channel.typing():
+                await asyncio.sleep(2)
+            response = await gpt_response(prompt)
+            await message.channel.send(response)
+
+    @gpt_turbo.error
+    async def error_gpt(self, ctx,error):
         await ctx.reply(error)
+        await ctx.reply("봇의 접근 권한이 없습니다!")
 
-def setup(bot): # this is called by Pycord to setup the cog
-    bot.add_cog(Chat_gpt(bot)) # add the cog to the bot
-
-
-'''
-        image = response['image']
-
-        with open('image.png', 'wb') as f:
-            f.write(image)
-
-        await ctx.send(file=discord.File('image.png'))
-'''
+def setup(bot): 
+    bot.add_cog(Chat_gpt(bot))
