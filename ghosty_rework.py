@@ -18,7 +18,9 @@ cogs_list = [
     'gpt',
     'user',
     "msg",
-    "dall_e"
+    "dall_e",
+    "verify",
+    "level"
 ]
 
 for cog in cogs_list:
@@ -28,7 +30,7 @@ for cog in cogs_list:
 @bot.event
 async def on_ready():  # 봇 준비 시 1회 동작하는 부분
     # 봇 이름 하단에 나오는 상태 메시지 설정
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Alpha testing"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("GPT 3.5 유료화 고려중..."))
     print("Bot is ready")
 
 #rework soon...
@@ -47,8 +49,8 @@ async def help(ctx):
     embed.set_author(name="command list",icon_url="attachment://image.png")
     embed.set_thumbnail(url="attachment://image.png")
     embed.add_field(name="$help",value="Shows this message",inline=False)
-    embed.add_field(name="$gpt",value="ask a Chat-Gpt (model = gpt-3.5-turbo)",inline=False)
-    embed.add_field(name="$text-davinci-003",value=" Ask text-davinci-003 (Chat-gpt3)",inline=False)
+    embed.add_field(name="$gpt",value="ask a Chat-Gpt (model = text-davinci-003)",inline=False)
+    embed.add_field(name="$gpt_turbo",value=" Ask gpt-3.5-turbo",inline=False)
     embed.add_field(name="$generate",value="Ghosty 가 당신이 원하는 이미지를 그려줍니다!\n(model = Dall-E)",inline=False)
     embed.add_field(name="/dev_role",value="you can get develoer community acess room.",inline=False)
     embed.add_field(name="/chat_gpt_turbo",value="Slash command gpt3.5",inline=False)

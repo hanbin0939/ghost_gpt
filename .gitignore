@@ -157,3 +157,4 @@ utils.py
 cogs/role.py
 cogs/roleview.py
 ex.py
+level.db
