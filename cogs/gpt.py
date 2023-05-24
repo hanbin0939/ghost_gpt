@@ -29,7 +29,7 @@ class Chat_gpt(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    #@ListCheck()
+    @ListCheck()
     async def gpt_turbo(self,ctx,*,prompt: str):
         async with ctx.typing():
             await asyncio.sleep(2)
@@ -44,7 +44,7 @@ class Chat_gpt(commands.Cog):
             response = openai.Completion.create(
                 model="text-davinci-003",
                 prompt=prompt,
-                max_tokens=4000,
+                max_tokens=4097,
                 temperature=0.7,
                 )
             headers = {"Authorization" : f"banner{key}"}
@@ -68,7 +68,7 @@ class Chat_gpt(commands.Cog):
 
         if message.channel.name == 'beta-testing':
             async with message.channel.typing():
-                await asyncio.sleep(2)
+                await asyncio.sleep(3)
             response = await gpt_response(prompt)
             await message.channel.send(response)
 

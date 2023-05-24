@@ -20,7 +20,8 @@ cogs_list = [
     "msg",
     "dall_e",
     "verify",
-    "level"
+    "level",
+    "ticket"
 ]
 
 for cog in cogs_list:
