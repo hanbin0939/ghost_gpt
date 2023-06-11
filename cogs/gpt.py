@@ -29,22 +29,22 @@ class Chat_gpt(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @ListCheck()
-    async def gpt_turbo(self,ctx,*,prompt: str):
+    #@ListCheck()
+    async def gpt(self,ctx,*,prompt: str):
         async with ctx.typing():
             await asyncio.sleep(2)
         response = await gpt_response(prompt)
         await ctx.send(response)
 
     @commands.command(help="ask a chat-gpt")
-    async def gpt(self, ctx:commands.Context, *,prompt:str):
+    async def gpt_d3(self, ctx:commands.Context, *,prompt:str):
         async with ctx.typing():
             await asyncio.sleep(2)
         async with aiohttp.ClientSession() as session:
             response = openai.Completion.create(
                 model="text-davinci-003",
                 prompt=prompt,
-                max_tokens=4097,
+                max_tokens=4000,
                 temperature=0.7,
                 )
             headers = {"Authorization" : f"banner{key}"}
@@ -66,13 +66,13 @@ class Chat_gpt(commands.Cog):
         
         print(username + " said " + user_message.lower() + " in " + channel)
 
-        if message.channel.name == 'beta-testing':
+        if message.channel.name == 'beta-ai':
             async with message.channel.typing():
                 await asyncio.sleep(3)
-            response = await gpt_response(prompt)
-            await message.channel.send(response)
+            respond = await gpt_response(prompt)
+            await message.channel.send(respond)
 
-    @gpt_turbo.error
+    @gpt.error
     async def error_gpt(self, ctx,error):
         await ctx.reply(error)
         await ctx.reply("봇의 접근 권한이 없습니다!")

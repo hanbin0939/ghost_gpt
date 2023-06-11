@@ -49,7 +49,7 @@ class Level(commands.Cog):
         await self.bot.db.commit()
 
     @commands.command()
-    async def my_level(self,ctx,member: discord.Member = None):
+    async def level(self,ctx,member: discord.Member = None):
         if member is None:
             member = ctx.author
             profile_picture = await load_image_async(str(member.avatar.url))
@@ -101,6 +101,33 @@ class Level(commands.Cog):
 
             file = discord.File(fp=background.image_bytes,filename="levelcard.png")
             await ctx.reply(file=file)
+
+    @commands.command(aliases=['lvl','rank','r'])
+    async def level_madness(self,ctx,member: discord.Member = None):
+        
+        if member is None:
+            member = ctx.author
+        async with self.bot.db.cursor() as cursor:
+            await cursor.execute("SELECT level FROM levels WHERE user = ? AND guild = ?",(member.id,ctx.guild.id))
+            xp = await cursor.fetchone()
+            await cursor.execute("SELECT level FROM levels WHERE user = ? AND guild = ?",(member.id,ctx.guild.id))
+            level = await cursor.fetchone()
+
+            if not xp or not level:
+                await cursor.execute("INSERT INTO levels (level, xp, user, guild) VALUES (?, ?, ?, ?)", (0, 0, member.id, ctx.guild.id))
+            try:
+                xp = xp[0]
+                level = level[0]
+            except TypeError:
+                xp = 0
+                level = 0
+            embed = discord.Embed(title=f"{member.name}",description=f"your level is *level {level}*",color=0xAEAEAE)
+            file = discord.File(f"image/l_{level}.png",filename="icon.png")
+            embed.set_author(name="command list",icon_url="attachment://icon.png")
+            embed.set_footer(text=f"tear : {level} \nMadness Combat")
+            embed.set_thumbnail(url="attachment://image.png")
+            with open(f"image/level{level}.png", "rb") as f:
+                await ctx.reply(embed=embed, files=[discord.File(f, "image.png"),file])
 
 
 def setup(bot): # this is called by Pycord to setup the cog

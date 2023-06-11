@@ -3,9 +3,6 @@ from dotenv import load_dotenv
 from discord.commands import Option
 from discord.ext import commands
 from config.config import *
-import asyncio
-import aiohttp
-import openai
 
 load_dotenv()
 
@@ -20,8 +17,7 @@ cogs_list = [
     "msg",
     "dall_e",
     "verify",
-    "level",
-    "ticket"
+    "level"
 ]
 
 for cog in cogs_list:
@@ -31,7 +27,7 @@ for cog in cogs_list:
 @bot.event
 async def on_ready():  # 봇 준비 시 1회 동작하는 부분
     # 봇 이름 하단에 나오는 상태 메시지 설정
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("GPT 3.5 유료화 고려중..."))
+    await bot.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game("!Emergency Protocall activated!"))
     print("Bot is ready")
 
 #rework soon...
@@ -50,12 +46,12 @@ async def help(ctx):
     embed.set_author(name="command list",icon_url="attachment://image.png")
     embed.set_thumbnail(url="attachment://image.png")
     embed.add_field(name="$help",value="Shows this message",inline=False)
-    embed.add_field(name="$gpt",value="ask a Chat-Gpt (model = text-davinci-003)",inline=False)
-    embed.add_field(name="$gpt_turbo",value=" Ask gpt-3.5-turbo",inline=False)
+    embed.add_field(name="$gpt_d3",value="ask a Chat-Gpt (model = text-davinci-003)",inline=False)
+    embed.add_field(name="$gpt",value=" Ask gpt-3.5-turbo",inline=False)
     embed.add_field(name="$generate",value="Ghosty 가 당신이 원하는 이미지를 그려줍니다!\n(model = Dall-E)",inline=False)
     embed.add_field(name="/dev_role",value="you can get develoer community acess room.",inline=False)
     embed.add_field(name="/chat_gpt_turbo",value="Slash command gpt3.5",inline=False)
     embed.add_field(name="/generate_command",value="BETA",inline=False)
     await ctx.reply(embed=embed,file=file)
 
-bot.run(token_beta)
+bot.run(token)
