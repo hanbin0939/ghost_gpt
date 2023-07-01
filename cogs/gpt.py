@@ -7,9 +7,20 @@ import asyncio
 from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = key
+
+def code_respose(prompt):
+    completion = openai.Completion.create(
+        model="code-davinci-002",
+        prompt=prompt,
+        max_tokens = 8000,
+        temperature=0.7
+    )
+    return completion.choices[0].message.content
+
+
 async def gpt_response(prompt):
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         messages=[
             {"role": "user", "content": prompt }
         ]
@@ -71,6 +82,12 @@ class Chat_gpt(commands.Cog):
                 await asyncio.sleep(3)
             respond = await gpt_response(prompt)
             await message.channel.send(respond)
+        
+        if message.channel.name == "code-davinci-002":
+            async with message.channel.typing():
+                await asyncio.sleep(3)
+            respond_c = await gpt_response(prompt)
+            await message.channel.send(respond_c)
 
     @gpt.error
     async def error_gpt(self, ctx,error):

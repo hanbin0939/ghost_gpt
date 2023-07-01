@@ -24,16 +24,20 @@ class user(commands.Cog):
         await channel.send(f'{member.mention} 님 {member.guild.name} 서버에 오신것을 환영합니다!!!',embed=embed)
 
     @discord.slash_command(aliases=['추방'])
-    @commands.is_owner()
-    async def kick_user(self, ctx, nickname: discord.Member):
-        await nickname.kick()
-        await ctx.respond(f"{nickname} 님이 추방되었습니다.")
+    @commands.has_permissions(administrator=True)
+    async def kick_user(self, ctx, nickname: discord.Member, password:Option(str,"비밀번호")):
+        if password == "ghost_0939":
+            await nickname.kick()
+            await ctx.respond(f"{nickname} 님이 추방되었습니다.")
+        else:
+            await ctx.respond("Password Wrong")
 
     @discord.slash_command(aliases=['차단'])
-    @commands.is_owner()
-    async def ban_user(self, ctx, nickname: discord.Member):
-        await nickname.ban()
-        await ctx.respond(f"{nickname} 님이 차단되었습니다.")
+    @commands.has_permissions(administrator=True)
+    async def ban_user(self, ctx, nickname: discord.Member, password:Option(str,"비밀번호")):
+        if password == "ban_087860":
+            await nickname.ban()
+            await ctx.respond(f"{nickname} 님이 차단되었습니다.")
 
     @commands.command()
     async def profile(self,ctx):
@@ -64,42 +68,6 @@ class user(commands.Cog):
         embed.set_footer(icon_url = f"{ctx.author.avatar.url}", text = f"Requested by {ctx.author}")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.respond(embed=embed)
-
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
-        if self.rules_message_id == payload.message_id:
-            if payload.emoji.name == "✅":
-                for role in await self.bot.guilds[0].fetch_roles():
-                    if role.name == self.new_member_role_name:
-                        await payload.member.add_roles(role)
-                        break
-    
-    async def setup_role(self):
-        exists = False
-        for role in await self.bot.guilds[0].fetch_roles():
-            if role.name == self.new_member_role_name:
-                exists = True
-                break
-        if exists:
-            return 
-        permissions= discord.Permissions.none()
-        permissions.view_channel = True
-        
-        await self.bot.guilds[0].create_role(
-            name=self.new_member_role_name,
-            color=discord.Color.red(),
-            hoist=True, 
-            permissions =permissions
-        )
-
-    @commands.command()
-    async def dev_role(ctx):
-        message = "이모지를 눌러 칭호를 얻으세요!"
-        react_message = await ctx.send(message)
-        await react_message.add_reaction(emoji="✅")
-    
-
-
 
 def setup(bot): # this is called by Pycord to setup the cog
     bot.add_cog(user(bot))
