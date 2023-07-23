@@ -12,7 +12,8 @@ class TicketCog(commands.Cog):
         Sends a message with a 'Create Ticket' button.
         """
         view = CreateTicketView()
-
+        view.timeout = None
+        
         await ctx.send("Click the button to create a ticket!", view=view)
 
 class CreateTicketView(discord.ui.View):
@@ -43,7 +44,8 @@ class CreateTicketView(discord.ui.View):
 
         # Add a 'Close Ticket' button to the new channel
         view = CloseTicketView()
-        await channel.send(f"New ticket created by {interaction.user.mention}! Click the button to close the ticket.", view=view(timeout=None))
+        view.timeout = None
+        await channel.send(f"New ticket created by {interaction.user.mention}! Click the button to close the ticket.", view=view)
 
         # Respond to the button click
         await interaction.response.send_message(f"Created a new ticket: {channel.mention}!")

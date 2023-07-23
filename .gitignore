@@ -161,3 +161,4 @@ level.db
 *.jpg
 *.png
 *.webp
+/image

@@ -10,9 +10,9 @@ openai.api_key = key
 
 def code_respose(prompt):
     completion = openai.Completion.create(
-        model="code-davinci-002",
+        model="code-davinci-003",
         prompt=prompt,
-        max_tokens = 8000,
+        max_tokens=8000,
         temperature=0.7
     )
     return completion.choices[0].message.content
@@ -31,7 +31,7 @@ modlist = [759072684461391893]
 
 def ListCheck():
     async def IsInList(ctx):
-        member = ctx.message.author.id
+        member=ctx.message.author.id
         return member in modlist
     return commands.check(IsInList)
 
@@ -63,11 +63,11 @@ class Chat_gpt(commands.Cog):
                 output = response["choices"][0]["text"]
                 embed = discord.Embed(title="chat GPT's response" , description=output,color=0xe6caff)
                 print(output)
-                await ctx.reply(embed=embed)
+                await ctx.reply(output)
 
     @commands.Cog.listener("on_message")
     async def on_message(self,message):
-        if message.author.bot:
+        if message.author.bot or message.content.startswith('$gpt'):
             return
             
         username = str(message.author).split('#')[0]
@@ -92,7 +92,6 @@ class Chat_gpt(commands.Cog):
     @gpt.error
     async def error_gpt(self, ctx,error):
         await ctx.reply(error)
-        await ctx.reply("봇의 접근 권한이 없습니다!")
 
 def setup(bot): 
     bot.add_cog(Chat_gpt(bot))

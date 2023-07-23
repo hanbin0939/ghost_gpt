@@ -19,8 +19,7 @@ cogs_list = [
     "msg",
     "dall_e",
     "level",
-    "music",
-    "mp3"
+    "ticket"
 ]
 
 
@@ -97,4 +96,4 @@ async def help(ctx):
     embed.add_field(name="$join",value="Join a voice chat")
     embed.add_field(name="$leave",value="Leave a voice chat")
     await ctx.reply(embed=embed, file=file)
-bot.run(token)
+bot.run(token_beta)
