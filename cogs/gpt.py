@@ -20,7 +20,7 @@ def code_respose(prompt):
 
 async def gpt_response(prompt):
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-16k",
+        model="gpt-4",
         messages=[
             {"role": "user", "content": prompt }
         ]
@@ -77,7 +77,7 @@ class Chat_gpt(commands.Cog):
         
         print(username + " said " + user_message.lower() + " in " + channel)
 
-        if message.channel.name == 'beta-ai':
+        if message.channel.name == 'chat-gpt':
             async with message.channel.typing():
                 await asyncio.sleep(3)
             respond = await gpt_response(prompt)
