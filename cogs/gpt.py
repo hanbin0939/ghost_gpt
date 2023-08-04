@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from color_ansi import Color
+import traceback
 import openai
 import aiohttp
 from config.config import *
@@ -17,6 +19,14 @@ def code_respose(prompt):
     )
     return completion.choices[0].message.content
 
+def gpt_3_response(prompt):
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role":"user","content":prompt}
+        ]
+    )
+    return completion.choices[0].message.content
 
 async def gpt_response(prompt):
     completion = openai.ChatCompletion.create(
@@ -39,8 +49,19 @@ class Chat_gpt(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(Color.GREEN + "[open-ai]-Ready"+Color.RESET)
+
+    @discord.slash_command(description="talk with GPT-4 : )")
     #@ListCheck()
+    async def gpt_4(self,ctx,*,prompt: str):
+        await ctx.defer()
+        await asyncio.sleep(60)
+        response = await gpt_response(prompt)
+        await ctx.respond(response)
+
+    @commands.command(description="talk with GPT-4 : )")
     async def gpt(self,ctx,*,prompt: str):
         async with ctx.typing():
             await asyncio.sleep(2)
@@ -83,15 +104,21 @@ class Chat_gpt(commands.Cog):
             respond = await gpt_response(prompt)
             await message.channel.send(respond)
         
-        if message.channel.name == "code-davinci-002":
+        if message.channel.name == "code-davinci-003":
             async with message.channel.typing():
                 await asyncio.sleep(3)
-            respond_c = await gpt_response(prompt)
+            respond_c = await code_respose(prompt)
             await message.channel.send(respond_c)
 
     @gpt.error
     async def error_gpt(self, ctx,error):
         await ctx.reply(error)
+
+    @commands.Cog.listener("on_error")
+    async def on_error(self,event, *args, **kwargs):
+        exc_info = traceback.format_exc()
+        print(Color.RED+ Color.BOLD+f"[ERROR] {event} - {args} - {kwargs}"+ Color.RESET +Color.RESET)
+        print(Color.RED+f"{exc_info}"+Color.RESET)
 
 def setup(bot): 
     bot.add_cog(Chat_gpt(bot))
